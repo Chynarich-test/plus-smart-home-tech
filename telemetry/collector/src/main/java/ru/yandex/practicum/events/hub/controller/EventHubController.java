@@ -16,7 +16,7 @@ import ru.yandex.practicum.events.hub.service.EventHubService;
 public class EventHubController {
     private final EventHubService eventHubService;
 
-    @PostMapping("/hub")
+    @PostMapping("/hubs")
     public void collectHubEvent(@Valid @RequestBody HubEvent event) {
         eventHubService.collectHubEvent(event);
     }
