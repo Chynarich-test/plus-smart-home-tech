@@ -30,11 +30,15 @@
         <grpc-spring-boot-starter.version>3.1.0.RELEASE</grpc-spring-boot-starter.version>
         <protobuf.version>3.23.4</protobuf.version>
         <grpc.version>1.63.0</grpc.version>
+        <lombok.version>1.18.30</lombok.version>
 
         <!--       Plugins       -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <avro-maven-plugin.version>${avro.version}</avro-maven-plugin.version>
         <protobuf-plugin.version>2.4.0</protobuf-plugin.version>
+
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <mapstruct-binding.version>0.2.0</mapstruct-binding.version>
     </properties>
 
     <dependencyManagement>
