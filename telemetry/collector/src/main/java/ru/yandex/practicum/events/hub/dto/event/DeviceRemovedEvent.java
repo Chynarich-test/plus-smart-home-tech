@@ -1,6 +1,6 @@
 package ru.yandex.practicum.events.hub.dto.event;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 public class DeviceRemovedEvent extends HubEvent {
-    @NotNull
+    @NotBlank
     private String id;
 
     @Override

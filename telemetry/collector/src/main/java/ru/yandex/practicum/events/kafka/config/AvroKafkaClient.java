@@ -6,7 +6,5 @@ import org.apache.kafka.clients.producer.Producer;
 public interface AvroKafkaClient {
     Producer<String, SpecificRecordBase> getProducer();
 
-//    Consumer<String, SpecificRecordBase> getConsumer();
-
     void stop();
 }
