@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotNull;
 
 public class TemperatureSensorEvent extends SensorEvent {
     @NotNull
-    private int temperatureC;
+    private Integer temperatureC;
     @NotNull
-    private int temperatureF;
+    private Integer temperatureF;
 
 
     @Override
