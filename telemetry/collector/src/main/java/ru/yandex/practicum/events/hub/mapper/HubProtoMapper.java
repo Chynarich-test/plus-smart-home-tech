@@ -4,9 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ValueMapping;
-import ru.yandex.practicum.events.hub.dto.ActionType;
-import ru.yandex.practicum.events.hub.dto.OperationType;
-import ru.yandex.practicum.events.hub.dto.ScenarioType;
+import ru.yandex.practicum.events.hub.dto.*;
 import ru.yandex.practicum.events.hub.dto.event.HubEvent;
 import ru.yandex.practicum.events.hub.dto.event.*;
 import ru.yandex.practicum.grpc.telemetry.event.*;
@@ -41,6 +39,31 @@ public interface HubProtoMapper {
     @Mapping(target = "conditions", source = "scenarioAdded.conditionList")
     @Mapping(target = "actions", source = "scenarioAdded.actionList")
     ScenarioAddedEvent toScenarioAdded(HubEventProto proto);
+
+    default ScenarioCondition toConditionDto(ScenarioConditionProto proto) {
+        var dto = new ScenarioCondition();
+        dto.setSensorId(proto.getSensorId());
+        dto.setType(mapConditionType(proto.getType()));
+        dto.setOperation(mapOperationType(proto.getOperation()));
+
+        switch (proto.getValueCase()) {
+            case INT_VALUE -> dto.setValue(proto.getIntValue());
+            case BOOL_VALUE -> dto.setValue(proto.getBoolValue() ? 1 : 0);
+            default -> dto.setValue(null);
+        }
+
+        return dto;
+    }
+
+    default DeviceAction toActionDto(DeviceActionProto proto) {
+        var dto = new DeviceAction();
+        dto.setSensorId(proto.getSensorId());
+        dto.setType(mapActionType(proto.getType()));
+
+        dto.setValue(proto.getValue());
+
+        return dto;
+    }
 
     @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
     ScenarioType mapConditionType(ConditionTypeProto type);
