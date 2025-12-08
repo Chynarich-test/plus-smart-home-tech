@@ -41,7 +41,7 @@ public interface HubProtoMapper {
     ScenarioAddedEvent toScenarioAdded(HubEventProto proto);
 
     default ScenarioCondition toConditionDto(ScenarioConditionProto proto) {
-        var dto = new ScenarioCondition();
+        ScenarioCondition dto = new ScenarioCondition();
         dto.setSensorId(proto.getSensorId());
         dto.setType(mapConditionType(proto.getType()));
         dto.setOperation(mapOperationType(proto.getOperation()));
@@ -56,7 +56,7 @@ public interface HubProtoMapper {
     }
 
     default DeviceAction toActionDto(DeviceActionProto proto) {
-        var dto = new DeviceAction();
+        DeviceAction dto = new DeviceAction();
         dto.setSensorId(proto.getSensorId());
         dto.setType(mapActionType(proto.getType()));
 
