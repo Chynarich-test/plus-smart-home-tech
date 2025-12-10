@@ -1,14 +1,18 @@
 package ru.yandex.practicum.model;
 
 import jakarta.persistence.Embeddable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-@Data
+import java.io.Serializable;
+
+@Getter
+@Setter
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
-public class ScenarioActionId {
-    private Long scenarioId;
-    private String sensorId;
-    private Long actionId;
+public class ScenarioActionId implements Serializable {
+    private Long scenario;
+    private String sensor;
+    private Long action;
 }

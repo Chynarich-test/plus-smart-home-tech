@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -17,5 +19,11 @@ public class Scenario {
     private String hubId;
 
     private String name;
+
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ScenarioCondition> conditions;
+
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ScenarioAction> actions;
 
 }

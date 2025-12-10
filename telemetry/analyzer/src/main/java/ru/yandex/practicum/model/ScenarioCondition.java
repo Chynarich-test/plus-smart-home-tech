@@ -7,23 +7,23 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "scenario_condition")
+@Table(name = "scenario_conditions")
 public class ScenarioCondition {
     @EmbeddedId
-    private ScenarioConditionId scenarioConditionId;
+    private ScenarioConditionId scenarioConditionId = new ScenarioConditionId();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("scenarioId")
+    @MapsId("scenario")
     @JoinColumn(name = "scenario_id")
     private Scenario scenario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("sensorId")
+    @MapsId("sensor")
     @JoinColumn(name = "sensor_id")
     private Sensor sensor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("conditionId")
+    @MapsId("condition")
     @JoinColumn(name = "condition_id")
     private Condition condition;
 }

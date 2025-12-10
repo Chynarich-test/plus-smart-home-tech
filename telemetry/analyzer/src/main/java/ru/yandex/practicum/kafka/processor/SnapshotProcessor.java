@@ -1,6 +1,5 @@
 package ru.yandex.practicum.kafka.processor;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -9,10 +8,12 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.config.AvroKafkaClient;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
+import ru.yandex.practicum.service.SnapshotService;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -21,15 +22,22 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@AllArgsConstructor
-public class SnapshotProcessor implements Runnable{
+public class SnapshotProcessor implements Runnable {
 
-    @Value("${kafka.snapshots.consume.attempt.timeout.ms}")
     private final Duration CONSUME_ATTEMPT_TIMEOUT;
     private final AvroKafkaClient kafkaClient;
-    @Value("${kafka.topic.analyzer.snapshots}")
     private final String snapshotTopic;
     private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
+    private final SnapshotService snapshotService;
+
+    public SnapshotProcessor(@Value("${kafka.snapshots.consume.attempt.timeout.ms}") Duration consumeAttemptTimeout,
+                             @Qualifier("snapshotClient") AvroKafkaClient kafkaClient,
+                             @Value("${kafka.topic.analyzer.snapshots}") String snapshotTopic, SnapshotService snapshotService) {
+        CONSUME_ATTEMPT_TIMEOUT = consumeAttemptTimeout;
+        this.kafkaClient = kafkaClient;
+        this.snapshotTopic = snapshotTopic;
+        this.snapshotService = snapshotService;
+    }
 
     @Override
     public void run() {
@@ -43,10 +51,10 @@ public class SnapshotProcessor implements Runnable{
                 ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(CONSUME_ATTEMPT_TIMEOUT);
 
                 for (ConsumerRecord<String, SpecificRecordBase> record : records) {
-                    if(record.value() instanceof SensorsSnapshotAvro snapshot){
-                        try{
-
-                        }catch (Exception e) {
+                    if (record.value() instanceof SensorsSnapshotAvro snapshot) {
+                        try {
+                            snapshotService.checkSnapshot(snapshot);
+                        } catch (Exception e) {
                             log.error("Ошибка обработки события: {}", snapshot, e);
                         }
                     }
