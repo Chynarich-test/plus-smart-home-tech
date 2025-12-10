@@ -3,6 +3,7 @@ package ru.yandex.practicum.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dao.ScenarioRepository;
 import ru.yandex.practicum.grpc.SnapshotGrpcSender;
 import ru.yandex.practicum.kafka.telemetry.event.*;
@@ -20,6 +21,7 @@ public class SnapshotService {
     private final ScenarioRepository scenarioRepository;
     private final SnapshotGrpcSender snapshotGrpcSender;
 
+    @Transactional(readOnly = true)
     public void checkSnapshot(SensorsSnapshotAvro snapshot) {
         List<Scenario> scenarios = scenarioRepository.findByHubId(snapshot.getHubId());
 

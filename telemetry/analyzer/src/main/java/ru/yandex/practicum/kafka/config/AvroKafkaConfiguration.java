@@ -18,8 +18,11 @@ public class AvroKafkaConfiguration {
     @Value("${kafka.server}")
     private String kafkaServer;
 
-    @Value("${kafka.consumer.id}")
-    private String kafkaConsumerId;
+    @Value("${kafka.consumer.id.hub}")
+    private String kafkaHubConsumerId;
+
+    @Value("${kafka.consumer.id.snapshot}")
+    private String kafkaSnapshotConsumerId;
 
     @Bean("hubEventClient")
     public AvroKafkaClient hubEventClient() {
@@ -33,7 +36,8 @@ public class AvroKafkaConfiguration {
                     config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
                     config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
                     config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, HubEventDeserializer.class);
-                    config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConsumerId);
+                    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+                    config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaHubConsumerId);
                     consumer = new KafkaConsumer<>(config);
                 }
                 return consumer;
@@ -58,7 +62,8 @@ public class AvroKafkaConfiguration {
                     config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
                     config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
                     config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorsSnapshotDeserializer.class);
-                    config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConsumerId);
+                    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+                    config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaSnapshotConsumerId);
                     consumer = new KafkaConsumer<>(config);
                 }
                 return consumer;

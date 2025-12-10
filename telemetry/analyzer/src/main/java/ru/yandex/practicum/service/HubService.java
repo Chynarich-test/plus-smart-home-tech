@@ -1,8 +1,8 @@
 package ru.yandex.practicum.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dao.ScenarioRepository;
 import ru.yandex.practicum.dao.SensorRepository;
 import ru.yandex.practicum.kafka.telemetry.event.*;
@@ -42,7 +42,11 @@ public class HubService {
     @Transactional
     public void addScenario(ScenarioAddedEventAvro event, String hubId) {
         scenarioRepository.findByHubIdAndName(hubId, event.getName())
-                .ifPresent(scenarioRepository::delete);
+                .ifPresent(scenario -> {
+                    scenarioRepository.delete(scenario);
+                    //не знаю на сколько нормально делать моментальную отправку, но по другому не получается
+                    scenarioRepository.flush();
+                });
 
         Scenario scenario = new Scenario();
         scenario.setHubId(hubId);
