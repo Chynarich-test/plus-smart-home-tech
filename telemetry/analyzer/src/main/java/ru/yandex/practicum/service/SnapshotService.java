@@ -7,10 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dao.ScenarioRepository;
 import ru.yandex.practicum.grpc.SnapshotGrpcSender;
 import ru.yandex.practicum.kafka.telemetry.event.*;
-import ru.yandex.practicum.model.Condition;
-import ru.yandex.practicum.model.ConditionOperation;
-import ru.yandex.practicum.model.Scenario;
-import ru.yandex.practicum.model.ScenarioCondition;
+import ru.yandex.practicum.model.*;
 
 import java.util.List;
 
@@ -46,9 +43,10 @@ public class SnapshotService {
                 return false;
             }
 
-            int actualValue = getSensorValue(state.getData());
 
             Condition condEntity = condition.getCondition();
+
+            int actualValue = getSensorValue(state.getData(), condEntity.getType());
             int expectedValue = condEntity.getValue();
             ConditionOperation operation = condEntity.getOperation();
 
@@ -67,7 +65,7 @@ public class SnapshotService {
         };
     }
 
-    private int getSensorValue(Object sensorData) {
+    private int getSensorValue(Object sensorData, ConditionType type) {
         if (sensorData instanceof TemperatureSensorAvro temp) {
             return temp.getTemperatureC();
         } else if (sensorData instanceof MotionSensorAvro motion) {
@@ -77,7 +75,12 @@ public class SnapshotService {
         } else if (sensorData instanceof SwitchSensorAvro sw) {
             return sw.getState() ? 1 : 0;
         } else if (sensorData instanceof ClimateSensorAvro climate) {
-            return climate.getCo2Level();
+            return switch (type) {
+                case TEMPERATURE -> climate.getTemperatureC();
+                case HUMIDITY -> climate.getHumidity();
+                case CO2LEVEL -> climate.getCo2Level();
+                default -> throw new IllegalArgumentException("Датчик климата не поддерживает условие: " + type);
+            };
         }
         throw new IllegalArgumentException("Неизвестный тип датчика: " + sensorData.getClass());
     }
