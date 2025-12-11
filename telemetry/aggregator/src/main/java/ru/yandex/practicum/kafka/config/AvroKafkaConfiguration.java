@@ -12,7 +12,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import ru.yandex.practicum.avro.deserializer.SensorEventDeserializer;
 import ru.yandex.practicum.avro.serializer.GeneralAvroSerializer;
 
@@ -21,7 +20,6 @@ import java.util.Properties;
 @Configuration
 public class AvroKafkaConfiguration {
     @Bean
-    @Scope("prototype")
     public AvroKafkaClient getClient(
             @Value("${kafka.server}") String kafkaServer,
             @Value("${kafka.producer.id}") String kafkaProducerId,
@@ -73,6 +71,7 @@ public class AvroKafkaConfiguration {
                     consumer.close();
                 }
                 if (producer != null) {
+                    producer.flush();
                     producer.close();
                 }
             }

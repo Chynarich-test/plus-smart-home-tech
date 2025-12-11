@@ -26,7 +26,7 @@ import java.util.Optional;
 @Component
 public class AggregationStarter {
 
-    private static final Duration CONSUME_ATTEMPT_TIMEOUT = Duration.ofMillis(1000);
+    private final Duration CONSUME_ATTEMPT_TIMEOUT;
     private final AvroKafkaClient kafkaClient;
     private final String sensorsTopic;
     private final String snapshotTopic;
@@ -34,10 +34,12 @@ public class AggregationStarter {
     private final StateManager stateManager;
     private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
-    public AggregationStarter(AvroKafkaClient kafkaClient,
+    public AggregationStarter(@Value("${kafka.aggregator.consume.attempt.timeout.ms}") Duration consumeAttemptTimeout,
+                              AvroKafkaClient kafkaClient,
                               @Value("${kafka.topic.telemetry.sensors}") String sensorsTopic,
                               @Value("${kafka.topic.telemetry.snapshots}") String snapshotTopic,
                               SnapshotProducer snapshotProducer, StateManager stateManager) {
+        CONSUME_ATTEMPT_TIMEOUT = consumeAttemptTimeout;
         this.kafkaClient = kafkaClient;
         this.sensorsTopic = sensorsTopic;
         this.snapshotTopic = snapshotTopic;
@@ -93,7 +95,6 @@ public class AggregationStarter {
         } catch (Exception e) {
             log.error("Ошибка во время обработки событий от датчиков", e);
         } finally {
-
             try {
                 consumer.commitSync(currentOffsets);
             } finally {

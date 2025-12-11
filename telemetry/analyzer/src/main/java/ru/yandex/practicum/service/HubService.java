@@ -44,7 +44,6 @@ public class HubService {
         scenarioRepository.findByHubIdAndName(hubId, event.getName())
                 .ifPresent(scenario -> {
                     scenarioRepository.delete(scenario);
-                    //не знаю на сколько нормально делать моментальную отправку, но по другому не получается
                     scenarioRepository.flush();
                 });
 
