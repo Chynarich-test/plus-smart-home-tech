@@ -45,12 +45,13 @@ public class WarehouseService {
 
         Product newProduct = warehouseMapper.toProduct(dto);
 
+        newProduct = productRepository.save(newProduct);
+
         Stock newStock = Stock.builder()
                 .product(newProduct)
                 .quantity(0L)
                 .build();
 
-        productRepository.save(newProduct);
         stockRepository.save(newStock);
     }
 

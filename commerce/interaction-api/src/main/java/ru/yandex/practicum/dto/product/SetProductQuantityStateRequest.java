@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class SetProductQuantityStateRequest {
-    @NotBlank(message = "Идентификатор товара не может быть пустым")
+    @NotNull(message = "Идентификатор товара не может быть пустым")
     private UUID productId;
     @NotNull(message = "Количество товара не может быть пустым")
     private QuantityState quantityState;

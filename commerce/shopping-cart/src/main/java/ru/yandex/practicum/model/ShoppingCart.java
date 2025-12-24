@@ -29,8 +29,8 @@ public class ShoppingCart {
 
     @ElementCollection
     @CollectionTable(
-            name = "cart_items",
-            joinColumns = @JoinColumn(name = "cart_id")
+            name = "shopping_cart_items",
+            joinColumns = @JoinColumn(name = "shopping_cart_id")
     )
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
