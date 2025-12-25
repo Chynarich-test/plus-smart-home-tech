@@ -62,11 +62,8 @@ public class ShoppingCartService {
         products.forEach((k, v) -> shoppingCart.getProducts().merge(k, v, Long::sum));
         ShoppingCartDto cartDtoToCheck = mapper.toDto(shoppingCart);
 
-        try {
-            warehouseClient.checkProductsNumber(cartDtoToCheck);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        warehouseClient.checkProductsNumber(cartDtoToCheck);
+
 
         return mapper.toDto(repository.save(shoppingCart));
     }
