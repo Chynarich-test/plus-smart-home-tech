@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      warehouse:
+        ignoreExceptions:
+          - ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse
+          - ru.yandex.practicum.exception.ProductNotFoundException
+          - ru.yandex.practicum.exception.SpecifiedProductAlreadyInWarehouseException
+          - ru.yandex.practicum.exception.NoSpecifiedProductInWarehouseException
+          - feign.FeignException.BadRequest
+        waitDurationInOpenState: 20s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+  timelimiter:
+    instances:
+      warehouse:
+        timeoutDuration: 10s
