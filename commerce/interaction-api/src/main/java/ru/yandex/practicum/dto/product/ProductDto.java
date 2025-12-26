@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -26,5 +27,5 @@ public class ProductDto {
     private ProductState productState;
     private ProductCategory productCategory;
     @NotNull(message = "Цена не может быть пустой")
-    private Float price;
+    private BigDecimal price;
 }

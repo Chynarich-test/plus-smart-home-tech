@@ -7,6 +7,7 @@ import ru.yandex.practicum.dto.product.ProductCategory;
 import ru.yandex.practicum.dto.product.ProductState;
 import ru.yandex.practicum.dto.product.QuantityState;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -34,5 +35,5 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
     @Column(nullable = false)
-    private Float price;
+    private BigDecimal price;
 }
