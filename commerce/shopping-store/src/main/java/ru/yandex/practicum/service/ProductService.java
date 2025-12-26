@@ -1,12 +1,10 @@
 package ru.yandex.practicum.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.dto.product.ProductCategory;
-import ru.yandex.practicum.dto.product.ProductDto;
-import ru.yandex.practicum.dto.product.ProductState;
-import ru.yandex.practicum.dto.product.SetProductQuantityStateRequest;
+import ru.yandex.practicum.dto.product.*;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.Product;
@@ -21,10 +19,10 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    public List<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
-        List<Product> products = productRepository.getProductsByProductCategory(category,
+    public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
+        Page<Product> products = productRepository.getProductsByProductCategory(category,
                 pageable);
-        return productMapper.toDtos(products);
+        return products.map(productMapper::toDto);
     }
 
     public ProductDto createProduct(ProductDto dto) {
@@ -87,6 +85,13 @@ public class ProductService {
 
         productRepository.save(existingProduct);
         return true;
+    }
+
+    public boolean updateStateProduct(UUID productId, QuantityState quantityState) {
+        return updateStateProduct(SetProductQuantityStateRequest.builder()
+                .productId(productId)
+                .quantityState(quantityState)
+                .build());
     }
 
     public ProductDto getOneProduct(UUID id) {

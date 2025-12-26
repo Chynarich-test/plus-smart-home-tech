@@ -2,11 +2,13 @@ package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.product.ProductCategory;
 import ru.yandex.practicum.dto.product.ProductDto;
+import ru.yandex.practicum.dto.product.QuantityState;
 import ru.yandex.practicum.dto.product.SetProductQuantityStateRequest;
 import ru.yandex.practicum.service.ProductService;
 
@@ -20,7 +22,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductDto> getProducts(@RequestParam ProductCategory category, @PageableDefault(size = 20) Pageable pageable) {
+    public Page<ProductDto> getProducts(@RequestParam ProductCategory category, @PageableDefault(size = 20) Pageable pageable) {
         return productService.getProducts(category, pageable);
     }
 
@@ -39,9 +41,15 @@ public class ProductController {
         return productService.deleteProduct(id);
     }
 
+    //Это правильный метод по спецификации
+//    @PostMapping("/quantityState")
+//    public boolean updateStateProduct(@Valid @RequestBody SetProductQuantityStateRequest dto) {
+//        return productService.updateStateProduct(dto);
+//    }
+
     @PostMapping("/quantityState")
-    public boolean updateStateProduct(@Valid @RequestBody SetProductQuantityStateRequest dto) {
-        return productService.updateStateProduct(dto);
+    public boolean updateStateProduct(@RequestParam UUID productId, @RequestParam QuantityState quantityState) {
+        return productService.updateStateProduct(productId, quantityState);
     }
 
     @GetMapping("/{productId}")
